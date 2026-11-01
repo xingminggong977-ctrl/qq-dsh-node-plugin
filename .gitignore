@@ -1,0 +1,11 @@
+﻿node_modules/
+*.log
+*.tar.gz
+.DS_Store
+
+# runtime persona data — never commit these
+persona/MEMORY.md
+persona/CORRECTIONS.md
+persona/diary/
+persona/memory/
+persona/knowledge/

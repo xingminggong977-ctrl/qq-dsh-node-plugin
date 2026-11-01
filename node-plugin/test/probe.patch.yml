@@ -1,0 +1,5 @@
+# Launcher-layer patch used only for the security probe:
+#   node <dsh>/lib/bin.js --profile qq --patch <this file>
+- insert:
+    - id: qq-probe
+      name: qq-node/test/probe.js

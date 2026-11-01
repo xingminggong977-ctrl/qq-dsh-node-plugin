@@ -1,0 +1,6 @@
+# Bundle patch for qq-node: mounts the QQ node once. Deployment values
+# (bridge URL, token, model) belong to the profile's own cordis.patch.yml,
+# which is applied after this layer.
+- insert:
+    - id: qq-node
+      name: qq-node

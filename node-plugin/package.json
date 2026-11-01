@@ -1,0 +1,53 @@
+{
+  "name": "qq-node",
+  "version": "0.1.0",
+  "private": true,
+  "description": "DSH cordis plugin: long-poll the cloud QQ bridge, run each QQ conversation in its own agent session, submit the reply.",
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./package.json": "./package.json",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./lib/bridge.js": "./lib/bridge.js",
+    "./lib/session.js": "./lib/session.js",
+    "./lib/runner.js": "./lib/runner.js",
+    "./lib/groups.js": "./lib/groups.js",
+    "./lib/qzone.js": "./lib/qzone.js",
+    "./lib/audit.js": "./lib/audit.js",
+    "./lib/tier.js": "./lib/tier.js",
+    "./lib/correction.js": "./lib/correction.js",
+    "./lib/recall.js": "./lib/recall.js",
+    "./lib/pc-tools.js": "./lib/pc-tools.js",
+    "./lib/nightly.js": "./lib/nightly.js",
+    "./lib/nightly-runner.js": "./lib/nightly-runner.js",
+    "./lib/reply-guard.js": "./lib/reply-guard.js",
+    "./test/probe.js": "./test/probe.js"
+  },
+  "files": [
+    "index.js",
+    "lib/",
+    "cordis.patch.yml",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "node --import ./test/dsh-resolve.js --test test/index.js"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/dsh-attachment": "*",
+    "@deepseek-ai/dsh-brand": "*",
+    "@deepseek-ai/dsh-llm": "*",
+    "@deepseek-ai/dsh-tools": "*",
+    "@deepseek-ai/schemastery": "*"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/schemastery": {
+      "optional": true
+    }
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}
