@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Persona + long-term memory injection.
  *
  * Every case runs against a temporary persona directory: the shipped
@@ -426,6 +426,8 @@ test('persona 5 — the per-turn tool budget goes to the owner and stops there',
 		// 一步一次模型往返，平均 5 秒；并行的几件事必须写在同一句话里才省得下来。
 		assert.match(owner.text, /同一条消息里一起发出去/)
 		assert.match(owner.text, /60 秒还没结论/)
+		// 早发那条路要有话可发：先撂一句再动手，25 秒时这句就会先出去。
+		assert.match(owner.text, /先撂一句「我去弄，稍等」再开始/)
 
 		// 访客没有工具，这段节奏对他只是噪声：一个字都不给。
 		const guest = sectionOf(await prompt.assemble(contextFor('qq-pace-guest')), PACE_SECTION)

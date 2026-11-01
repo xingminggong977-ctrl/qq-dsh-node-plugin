@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Persona and long-term memory injection for QQ conversations.
  *
  * Four global prompt sections are registered on `ctx.systemPrompt`; their `text`
@@ -51,13 +51,14 @@ export const QZONE_NOTES_ORDER = 210
 export const PACE_SECTION = 'qq:pace'
 /** Right after the persona block: it is about how she works, not what she knows. */
 export const PACE_ORDER = 120
-/** How the block is introduced; the budget itself stays four lines. */
+/** How the block is introduced; the budget itself stays five lines. */
 const PACE_TITLE = '## 干活的节奏'
 const PACE_LINES = [
 	'一个回合里工具调用控制在 8 次以内；不够就先回话，剩下的下一轮接着做。',
 	'每次调用前想清楚要看什么，能一条命令看完的别拆成好几条。',
 	'互不依赖的几件事，写在同一条消息里一起发出去（一次可以发好几个工具调用），别一个一个排队等。',
 	'一件事 60 秒还没结论，就先说卡在哪，别一直埋头试——对方在等一句话。',
+	'要动手做的事，先撂一句「我去弄，稍等」再开始：25 秒时她会把这句话先发出去，别让对方对着静音猜。',
 ]
 /** How the block is introduced; the list itself stays five short lines. */
 const QZONE_NOTES_TITLE = '## 我发过的说说'
