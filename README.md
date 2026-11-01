@@ -53,6 +53,16 @@ all, because non-owner sessions are assembled with an empty preset.
 All configuration, budgets and the full test list are in
 [`node-plugin/README.md`](node-plugin/README.md).
 
+## 中文
+
+这是一个 DSH 插件：它向桥接要来任务、跑一个回合并把结果交回去。中间那些让人以为「她在」
+的东西都在这个仓库里——按字节预算装配人格、带衰减的长期记忆、日记、慢回合先说一句、
+工具预算、夜班复盘。
+
+装的时候把 `node-plugin/` 链进 profile（`"qq-node": "link:/路径/仓库/node-plugin"`），
+然后照 `persona/PERSONA.md` 写你自己的人格；记忆、规矩、日记会在第一次写入时自己长出来，
+而且不会进 git。别人的会话拿不到你的记忆，也拿不到工具。
+
 ## License
 
 MIT.
