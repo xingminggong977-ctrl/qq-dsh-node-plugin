@@ -1,4 +1,4 @@
-﻿import test from 'node:test'
+import test from 'node:test'
 import assert from 'node:assert/strict'
 import { QqNodeRunner } from '../lib/runner.js'
 
@@ -91,6 +91,8 @@ test('audit wiring: one private reply writes exactly one private_reply record', 
 			target: '10001',
 			text: '在呢',
 			taskId: 't-audit-1',
+			needsReply: true,
+			isOwner: true,
 		})
 	} finally {
 		await runner.stop()
@@ -127,16 +129,17 @@ test('audit wiring: with tiering on the record names the tier that produced it',
 	}
 })
 
-test('audit wiring: an empty reply is not speech, so nothing is recorded', async () => {
+test('audit wiring: an empty reply is recorded as zero characters, so the log and the audit agree', async () => {
 	const client = stubClient([{ ...PRIVATE_TASK, taskId: 't-audit-3' }])
 	const store = stubStore({ text: '' })
 	const audit = recorder()
 	const runner = new QqNodeRunner({ ctx: {}, client, store, options: OPTIONS, log: () => {}, audit })
 	runner.start()
 	try {
-		await waitFor(() => client.delivered.length >= 1)
-		await new Promise((resolve) => setTimeout(resolve, 120))
-		assert.equal(audit.records.length, 0)
+		assert.equal(await waitFor(() => audit.records.length >= 1), true, 'the empty answer left no trace')
+		assert.equal(audit.records[0].text, '')
+		assert.equal(audit.records[0].needsReply, true)
+		assert.equal(audit.records[0].isOwner, true)
 	} finally {
 		await runner.stop()
 	}
@@ -227,3 +230,63 @@ test('correction wiring: chatter is not a rule, and a group cannot write one', a
 		await runner.stop()
 	}
 })
+
+test('audit wiring: a reply that came out empty is still one record, so the two sides can be reconciled', async () => {
+	const client = stubClient([{ ...PRIVATE_TASK, taskId: 't-audit-empty', needsReply: true }])
+	const store = stubStore({ text: '' })
+	const audit = recorder()
+	const runner = new QqNodeRunner({ ctx: {}, client, store, options: OPTIONS, log: () => {}, audit })
+	runner.start()
+	try {
+		assert.equal(await waitFor(() => audit.records.length >= 1), true, 'an empty reply left no trace')
+		assert.deepEqual(audit.records[0], {
+			kind: 'private_reply',
+			target: '10001',
+			text: '',
+			taskId: 't-audit-empty',
+			needsReply: true,
+			isOwner: true,
+		})
+	} finally {
+		await runner.stop()
+	}
+})
+
+test('audit wiring: a group turn that was asked and said nothing is recorded too, without isOwner', async () => {
+	const client = stubClient([
+		{ ...PRIVATE_TASK, taskId: 't-audit-quiet', kind: 'group', groupId: '123456', isOwner: false, mentioned: true, needsReply: true },
+	])
+	const store = stubStore({ text: '' })
+	const audit = recorder()
+	const runner = new QqNodeRunner({ ctx: {}, client, store, options: OPTIONS, log: () => {}, audit })
+	runner.start()
+	try {
+		assert.equal(await waitFor(() => audit.records.length >= 1), true, 'an empty group answer left no trace')
+		assert.deepEqual(audit.records[0], {
+			kind: 'group_reply',
+			target: '123456',
+			text: '',
+			taskId: 't-audit-quiet',
+			needsReply: true,
+		})
+	} finally {
+		await runner.stop()
+	}
+})
+
+test('audit wiring: a turn nobody asked to answer writes nothing', async () => {
+	const client = stubClient([
+		{ ...PRIVATE_TASK, taskId: 't-audit-context', userId: '20002', isOwner: false, needsReply: false },
+	])
+	const store = stubStore({ text: '' })
+	const audit = recorder()
+	const runner = new QqNodeRunner({ ctx: {}, client, store, options: OPTIONS, log: () => {}, audit })
+	runner.start()
+	try {
+		assert.equal(await waitFor(() => store.seen.length >= 1), true, 'the task must run')
+		assert.deepEqual(audit.records, [], 'nobody asked, so there is nothing to reconcile')
+	} finally {
+		await runner.stop()
+	}
+})
+

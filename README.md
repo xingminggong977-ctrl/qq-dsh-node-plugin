@@ -20,7 +20,7 @@ diary, sends a sentence early when a turn is slow, and runs a nightly review.
 - **Try it:**
   ```bash
   cd node-plugin
-  node --import ./test/dsh-resolve.js --test test/index.js    # 300 tests, no network needed
+  node --import ./test/dsh-resolve.js --test test/index.js    # 303 tests, no network needed
   ```
 - **Install it:** link the package into a DSH profile —
   `"qq-node": "link:/path/to/repo/node-plugin"` — then write your own

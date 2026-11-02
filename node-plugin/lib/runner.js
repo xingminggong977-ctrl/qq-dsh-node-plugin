@@ -381,13 +381,20 @@ export class QqNodeRunner {
 			const text = silent ? '' : outcome.text
 			await this.#submit({ taskId: task.taskId, ok: true, text, error: null })
 			await this.#settleBatched(task, { ok: true, error: null })
-			if (text !== '') {
+			// 该回话却一个字都没说，也要留一条：2026-11-01 16:08 那次日志说「textChars: 0」，
+			// 审计里却查不到对应的 0 字符记录，事后只能靠猜。故意的沉默（插话被收回、
+			// 主动搭话自己咽回去）不记——那是设计，不是缺陷。
+			const wantsAnswer = needsReplyOf(task)
+			const worthRecording = text !== '' || (wantsAnswer && !silent)
+			if (worthRecording) {
 				this.#audit?.record({
 					kind: proactive ? 'proactive' : group ? 'group_reply' : 'private_reply',
 					target: group ? String(task.groupId ?? '') : String(task.userId ?? ''),
 					text,
 					...(this.#options.tiering !== undefined ? { tier } : {}),
 					taskId: task.taskId,
+					...(wantsAnswer ? { needsReply: true } : {}),
+					...(task.isOwner === true ? { isOwner: true } : {}),
 				})
 			}
 			if (group && text !== '') this.#interjection.noteSpoke(key)

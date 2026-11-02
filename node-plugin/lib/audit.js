@@ -48,6 +48,8 @@ export function createAuditLog({ dir = '', log = () => {}, now = () => new Date(
 	 * @param entry.text - what was actually said.
 	 * @param entry.tier - thinking tier that produced it, when tiering is on.
 	 * @param entry.taskId - protocol task that produced it, when there is one.
+	 * @param entry.needsReply - the turn was expected to answer, even if it answered nothing.
+	 * @param entry.isOwner - the person on the other side is the owner.
 	 * @returns whether the line reached the file.
 	 */
 	function record(entry) {
@@ -63,6 +65,8 @@ export function createAuditLog({ dir = '', log = () => {}, now = () => new Date(
 			...(text.length > AUDIT_MAX_TEXT ? { truncated: true } : {}),
 			...(typeof entry?.tier === 'string' && entry.tier !== '' ? { tier: entry.tier } : {}),
 			...(typeof entry?.taskId === 'string' && entry.taskId !== '' ? { taskId: entry.taskId } : {}),
+			...(entry?.needsReply === true ? { needsReply: true } : {}),
+			...(entry?.isOwner === true ? { isOwner: true } : {}),
 		}
 		try {
 			mkdirSync(target, { recursive: true })

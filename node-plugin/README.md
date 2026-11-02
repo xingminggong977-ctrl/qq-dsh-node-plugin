@@ -51,7 +51,7 @@ node <dsh>/lib/bin.js --profile qq --patch qq-dsh/node-plugin/cordis.patch.yml
 | `nonOwnerPreset` | `qq-chat-only` | 记在非 owner 会话上的可审计 preset 名；真正的工具封锁由 setup hook 执行 |
 | `proactiveInterjection` | 见下 | 群聊插话开关与配额；`enabled: false` 时完全不触发 |
 | `napcatUrl` | `ws://127.0.0.1:3001` | NapCat OneBot11 WS 口，`qzone_send` 每次调用短连一次；必须是 ws(s) URL |
-| `auditDir` | 空（关闭） | 每月一个 `audit-YYYY-MM.jsonl`，记下她每一句对外发言。**留空即关闭**，因为派生默认值会让测试跑进生产审计日志；云端 profile 显式指到 `/opt/dsh-qq-agent/audit`，备份脚本已覆盖那棵树 |
+| `auditDir` | 空（关闭） | 每月一个 `audit-YYYY-MM.jsonl`，记下她每一句对外发言。**留空即关闭**，因为派生默认值会让测试跑进生产审计日志；云端 profile 显式指到 `/opt/dsh-qq-agent/audit`，备份脚本已覆盖那棵树。该回话却回了空包时也记一条（`chars: 0`，带 `needsReply` / `isOwner`） |
 | `effortTiering` | `false` | 逐条消息降思考档：短句、无任务动词、无图片走低档。**必须同时配好 `provider` 与 `model`**，否则自动关闭（tier 需要重写这两个字段） |
 | `pcEnabled` | `false` | 主人电脑通道总开关。**不动就是关的**：关着时 `pc_exec`/`pc_read`/`pc_write` 一个都不注册，启动日志会写明原因。只在主人私聊里注册，群里一个都没有 |
 | `pcBaseUrl` | `http://127.0.0.1:8787` | 三个 PC 工具投命令的 bridge 基址（`POST /node/pc/enqueue`）；判离线时还会主动查一次 `GET /node/pc/status` 区分「刚断开」与「没开机」。必须是 http(s) URL，通常与 `bridgeUrl` 相同 |
@@ -149,7 +149,7 @@ proactiveInterjection:
 npm test
 ```
 
-等价于 `node --import ./test/dsh-resolve.js --test test/index.js`，一条命令跑完 27 个测试文件——persona、session、acceptance、groups、turn-timeout、early-reply、tool-budget、memory、recall、remind、send-file、nightly、pc-tools、audit、tier 等（当前 300 个用例）。`test/dsh-resolve.js` 负责把 `@deepseek-ai/*` 解析到本机 dsh 安装，装到别处时用 `DSH_INSTALL` 覆盖安装锚点。这台机器上 PowerShell 执行策略禁用 `npm.ps1`，所以用 `npm.cmd test`。
+等价于 `node --import ./test/dsh-resolve.js --test test/index.js`，一条命令跑完 27 个测试文件——persona、session、acceptance、groups、turn-timeout、early-reply、tool-budget、memory、recall、remind、send-file、nightly、pc-tools、audit、tier 等（当前 303 个用例）。`test/dsh-resolve.js` 负责把 `@deepseek-ai/*` 解析到本机 dsh 安装，装到别处时用 `DSH_INSTALL` 覆盖安装锚点。这台机器上 PowerShell 执行策略禁用 `npm.ps1`，所以用 `npm.cmd test`。
 
 单跑某一套时也要带 `--import ./test/dsh-resolve.js`，否则 `lib/session.js` 解析不到 `@deepseek-ai/dsh-llm`（`ERR_MODULE_NOT_FOUND`）。`audit.test.js` 与 `tier.test.js` 是纯函数，不带也能跑。
 
