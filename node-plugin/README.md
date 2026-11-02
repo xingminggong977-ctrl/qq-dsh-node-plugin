@@ -116,8 +116,8 @@ proactiveInterjection:
 现在这条路是 `POST /node/send_file`，桥把文件读成 base64 交给 NapCat（它在另一台机器上，传路径过去
 只会说「文件不存在」），收件人固定是主人。
 
-- **只发给主人 + 只打开 `QQ_FILE_ROOTS` 里的路径**（默认 `/var/lib/dsh-qq-agent/workspace:/tmp`）。
-  别的路径桥回 `not_in_allowed_roots`，工具把它翻成「只能发工作区或 /tmp 下的文件」。
+- **只发给主人 + 只打开 `QQ_FILE_ROOTS` 里的路径**（默认 `/var/lib/dsh-qq-agent/workspace`）。
+  别的路径桥回 `not_in_allowed_roots`，工具把它翻成「只能发工作区里的文件」——`/tmp` 不算，服务有私有 tmp。
 - 工具本身仍然只在主人的私聊里可用（`isPrivateOwnerTurn()`），群里问她要文件一律 `scope` 错误。
 - **图片会直接显示**：`.png/.jpg/.jpeg/.gif/.webp/.bmp` 走图片段，会话里看得见不用下载；被 NapCat 拒收时桥自动退回文件通道。
 - 发之前先确认文件在不在：`file not found` 会原样变成「那边没找到这个文件」，别让她空口承诺。

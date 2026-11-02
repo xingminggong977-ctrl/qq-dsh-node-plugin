@@ -50,7 +50,7 @@ test('qq_send_file — 路径不在白名单里就把桥的原话翻成人话', 
 		runInTaskScope(OWNER, () => tool.execute({ path: '/etc/shadow' })),
 		(error) => error instanceof SendFileError
 			&& error.code === 'bridge'
-			&& /只能发工作区或 \/tmp 下的文件/.test(error.message),
+			&& /只能发工作区里的文件/.test(error.message),
 	)
 })
 

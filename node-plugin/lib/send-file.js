@@ -34,7 +34,7 @@ export function createSendFileTool({ client } = {}) {
 		name: SEND_FILE_TOOL_NAME,
 		description: TOOL_DESCRIPTION,
 		parameters: {
-			path: { type: 'string', required: true, description: '文件的绝对路径，必须在工作区或 /tmp 下' },
+			path: { type: 'string', required: true, description: '文件的绝对路径，必须在工作区目录下' },
 			// 可选参数不能写 required: false —— schema 编译器只接受 required: true 或干脆没有这个字段。
 			name: { type: 'string', description: '在 QQ 里显示的文件名；不填就用原文件名' },
 		},
@@ -55,7 +55,7 @@ export function createSendFileTool({ client } = {}) {
 			const sent = await client.sendFile({ path, name })
 			if (sent?.ok !== true) {
 				const reason = sent?.error === 'not_in_allowed_roots'
-					? '这个路径桥接不会打开：只能发工作区或 /tmp 下的文件'
+					? '这个路径桥接不会打开：只能发工作区里的文件（/tmp 在服务里是它自己的私有目录）'
 					: sent?.error === 'file not found'
 						? '那边没找到这个文件'
 						: sent?.error ?? '桥接没发出去'
