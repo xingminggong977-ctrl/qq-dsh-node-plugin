@@ -98,6 +98,23 @@ test('remind tool — 排好了就把时间与那句话回给她', async () => {
 	assert.equal(answer, '排好了：11月2日 08:30，到点我会说「该吃药了」')
 })
 
+test('remind tool — 同一件事排第二遍，说的是「本来就定着了」而不是再排一条', async () => {
+	const tool = createRemindTool({
+		client: {
+			async remind(payload) {
+				return { ok: true, reminderId: 'r-1', at: payload.at, duplicate: true }
+			},
+		},
+		now: () => NOW,
+	})
+
+	const answer = await runInTaskScope(OWNER, () => tool.execute({ at: '明天 19:00', text: '给爸爸打个电话' }))
+
+	assert.match(answer, /本来就定着了/)
+	assert.match(answer, /只会说一次/)
+	assert.doesNotMatch(answer, /^排好了/)
+})
+
 test('remind tool — 桥接没排上就报错，不假装排上了', async () => {
 	const tool = createRemindTool({
 		client: { remind: async () => ({ ok: false, error: '太远了，我只能记一个月内的' }) },

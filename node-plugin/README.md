@@ -149,7 +149,7 @@ proactiveInterjection:
 npm test
 ```
 
-等价于 `node --import ./test/dsh-resolve.js --test test/index.js`，一条命令跑完 persona、acceptance、groups、protocol-v2、turn-timeout、early-reply、qzone、memory、audit、tier 九套（当前 299 个用例）。`test/dsh-resolve.js` 负责把 `@deepseek-ai/*` 解析到本机 dsh 安装，装到别处时用 `DSH_INSTALL` 覆盖安装锚点。这台机器上 PowerShell 执行策略禁用 `npm.ps1`，所以用 `npm.cmd test`。
+等价于 `node --import ./test/dsh-resolve.js --test test/index.js`，一条命令跑完 persona、acceptance、groups、protocol-v2、turn-timeout、early-reply、qzone、memory、audit、tier 九套（当前 300 个用例）。`test/dsh-resolve.js` 负责把 `@deepseek-ai/*` 解析到本机 dsh 安装，装到别处时用 `DSH_INSTALL` 覆盖安装锚点。这台机器上 PowerShell 执行策略禁用 `npm.ps1`，所以用 `npm.cmd test`。
 
 单跑某一套时也要带 `--import ./test/dsh-resolve.js`，否则 `lib/session.js` 解析不到 `@deepseek-ai/dsh-llm`（`ERR_MODULE_NOT_FOUND`）。`audit.test.js` 与 `tier.test.js` 是纯函数，不带也能跑。
 

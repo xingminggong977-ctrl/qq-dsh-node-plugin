@@ -142,6 +142,10 @@ export function createRemindTool({ client, now = Date.now } = {}) {
 			const at = parseWhen(args?.at, { now: now() })
 			const created = await client.remind({ at, text: String(args?.text ?? '') })
 			if (created?.ok !== true) throw new RemindError(created?.error ?? '桥接没排上', { code: 'bridge' })
+			// 同一件事排过一遍了：说清楚，别让她以为自己又加了一条，也别让对方到点收到两遍。
+			if (created.duplicate === true) {
+				return `这条本来就定着了：${humanWhen(created.at ?? at)}，到点我只会说一次「${String(args?.text ?? '').trim()}」`
+			}
 			return `排好了：${humanWhen(created.at ?? at)}，到点我会说「${String(args?.text ?? '').trim()}」`
 		},
 	})
